@@ -1,12 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, UseInterceptors, UploadedFile, SetMetadata } from '@nestjs/common';
 import { LocationService } from './location.service';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { UploadImgLocationDto } from './dto/upload-img-location.dto';
 import { getStorageOption } from 'src/shared/file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { LocationDto } from './dto/location.dto';
 
 @ApiTags("ViTri")
 @Controller('vi-tri')
@@ -15,10 +14,11 @@ export class LocationController {
 
   // Thêm Vị Trí
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Post()
-  create(@Body() createLocationDto: CreateLocationDto) {
-    return this.locationService.create(createLocationDto);
+  create(@Body() locationDto: LocationDto) {
+    return this.locationService.create(locationDto);
   }
 
   // Get Danh Sách Vị Trí
@@ -48,7 +48,8 @@ export class LocationController {
 
   // Upload Hình
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     type: UploadImgLocationDto
@@ -64,15 +65,17 @@ export class LocationController {
 
   // Cập Nhật Vị Trí
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
-    return this.locationService.update(+id, updateLocationDto);
+  update(@Param('id') id: string, @Body() locationDto: LocationDto) {
+    return this.locationService.update(+id, locationDto);
   }
 
   // Xoá Vị Trí
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.locationService.remove(+id);

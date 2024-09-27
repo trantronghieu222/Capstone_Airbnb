@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'prisma/prisma.service';
 import { RoomDto } from './dto/room.dto';
@@ -47,7 +47,7 @@ export class RoomService {
       })
       return data;
     } catch (error) {
-      throw new HttpException("Lỗi Server", 500)
+      throw new HttpException("Lỗi Server", HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -123,7 +123,7 @@ export class RoomService {
       })
       return data
     } catch (error) {
-      throw new HttpException("Lỗi Server", 500)
+      throw new HttpException("Lỗi Server", HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -140,20 +140,33 @@ export class RoomService {
       })
       return uploadImgRoom
     } catch (error) {
-      throw new HttpException("Lỗi Server", 500)
+      throw new HttpException("Lỗi Server", HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
   // Thêm Phòng 
   async createRoom(roomDto: RoomDto) {
-    const location = await this.prisma.viTri.findUnique({
+    // Kiểm tra trùng ID
+    const checkedId = await this.prisma.phong.findUnique({
+      where: {
+        ma_phong: roomDto.ma_phong
+      }
+    })
+
+    if (checkedId) {
+      throw new HttpException("Mã phòng đã tồn tại", HttpStatus.BAD_REQUEST)
+    }
+
+    // Kiểm tra vị trí hợp lệ
+    const checkLocation = await this.prisma.viTri.findUnique({
       where: { ma_vi_tri: roomDto.ma_vi_tri },
     });
 
-    if (!location || location?.da_xoa) {
-      throw new HttpException("Không tồn tại vị tri", 404)
+    if (!checkLocation || checkLocation?.da_xoa) {
+      throw new HttpException("Không tồn tại vị trí", HttpStatus.BAD_REQUEST)
     }
 
+    // Thêm phòng
     let newRoom = await this.prisma.phong.create({
       data: {
         ...roomDto,
@@ -177,14 +190,18 @@ export class RoomService {
 
   // Xoá Phòng 
   async removeRoom(id: number) {
-    let data = await this.prisma.phong.update({
-      where: {
-        ma_phong: id
-      },
-      data: {
-        da_xoa: true
-      }
-    })
-    return data
+    try {
+      let data = await this.prisma.phong.update({
+        where: {
+          ma_phong: id
+        },
+        data: {
+          da_xoa: true
+        }
+      })
+      return data
+    } catch (error) {
+      throw new HttpException("Lỗi khi xoá", HttpStatus.BAD_REQUEST)
+    }
   }
 }

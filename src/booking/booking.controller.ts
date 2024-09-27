@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { BookingService } from './booking.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { BookingDto } from './dto/booking.dto';
 
 @ApiTags("DatPhong")
 @Controller('dat-phong')
@@ -14,8 +13,8 @@ export class BookingController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createBookingDto: CreateBookingDto) {
-    return this.bookingService.create(createBookingDto);
+  create(@Body() bookingDto: BookingDto) {
+    return this.bookingService.create(bookingDto);
   }
 
   // Get Danh Sách Đặt Phòng
@@ -40,8 +39,8 @@ export class BookingController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  updateBooking(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.updateBooking(+id, updateBookingDto);
+  updateBooking(@Param('id') id: string, @Body() bookingDto: BookingDto) {
+    return this.bookingService.updateBooking(+id, bookingDto);
   }
 
   // Xoá

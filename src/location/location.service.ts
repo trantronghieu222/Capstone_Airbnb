@@ -1,8 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
 import { PrismaService } from 'prisma/prisma.service';
-import { Multer } from 'multer';
+import { LocationDto } from './dto/location.dto';
 
 @Injectable()
 export class LocationService {
@@ -11,15 +9,15 @@ export class LocationService {
   ) { }
 
   // Thêm Vị Trí
-  async create(createLocationDto: CreateLocationDto) {
+  async create(locationDto: LocationDto) {
     let newLocation = {
-      ...createLocationDto,
+      ...locationDto,
       da_xoa: false
     }
     let data = await this.prisma.viTri.create({
       data: newLocation
     })
-    return newLocation;
+    return data;
   }
 
   // Get Danh Sách Vị Trí
@@ -107,12 +105,12 @@ export class LocationService {
   }
 
   // Cập Nhật Vị Trí
-  async update(id: number, updateLocationDto: UpdateLocationDto) {
+  async update(id: number, locationDto: LocationDto) {
     let data = await this.prisma.viTri.update({
       where: {
         ma_vi_tri: id
       },
-      data: updateLocationDto
+      data: locationDto
     })
     return data
   }

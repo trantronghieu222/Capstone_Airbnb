@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateBookingDto {
+export class BookingDto {
     @ApiProperty({example: 0})
     ma_dat_phong: number;
 

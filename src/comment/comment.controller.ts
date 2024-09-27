@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { CommentDto } from './dto/comment.dto';
 
 @ApiTags("BinhLuan")
 @Controller('binh-luan')
@@ -16,8 +15,8 @@ export class CommentController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  create(@Body() commentDto: CommentDto) {
+    return this.commentService.create(commentDto);
   }
 
   // Get Danh Sách Bình Luận
@@ -36,8 +35,8 @@ export class CommentController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  update(@Param('id') id: string, @Body() commentDto: CommentDto) {
+    return this.commentService.update(+id, commentDto);
   }
 
   // Xoá Bình Luận

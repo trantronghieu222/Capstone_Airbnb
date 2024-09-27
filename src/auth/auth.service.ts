@@ -3,6 +3,9 @@ import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'prisma/prisma.service';
+import * as bcrypt from 'bcrypt'
+
+
 @Injectable()
 export class AuthService {
 
@@ -10,6 +13,11 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService
   ) { }
+
+  // Decode token
+  decodeToken(token: string) {
+    return this.jwtService.decode(token);
+  }
 
   // Đăng nhập
   async signIn(signInDto: SignInDto) {
@@ -19,8 +27,10 @@ export class AuthService {
       }
     })
     if (checkedEmail) {
-      if (checkedEmail.mat_khau == signInDto.mat_khau) {
-        let token = this.jwtService.sign({userId: checkedEmail.ma_nguoi_dung}, {algorithm: 'HS256', expiresIn: '1h', secret:'AIRBNB_BACKEND_SECRET_KEY'})
+      // Giải mã pwd
+      if (bcrypt.compareSync(signInDto.mat_khau, checkedEmail.mat_khau)) {
+        let token = this.jwtService.sign({userId: checkedEmail.ma_nguoi_dung, role: checkedEmail.vai_tro}, {algorithm: 'HS256', expiresIn: '1h', secret:'AIRBNB_BACKEND_SECRET_KEY'})
+
         return {
           status: HttpStatus.OK,
           message: 'Đăng nhập thành công',
@@ -56,6 +66,8 @@ export class AuthService {
     let createUser = await this.prisma.nguoiDung.create({
       data: {
         ...signUpDto,
+        // Mã hoá pwd
+        mat_khau: await bcrypt.hash(signUpDto.mat_khau, 10),
         vai_tro: 'user',
         da_xoa: false
       }

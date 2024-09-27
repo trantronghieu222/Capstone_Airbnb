@@ -1,15 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, UseGuards, Headers, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, UseGuards, Headers, Res, SetMetadata, HttpStatus } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { UpdateRoomDto } from './dto/update-room.dto';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { ApiBody, ApiConsumes, ApiTags, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UploadImgRoomDto } from './dto/upload-img-room.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { RoomDto } from './dto/room.dto';
 import { getStorageOption } from 'src/shared/file-upload.service';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags("Phong")
 @Controller('phong-thue')
@@ -25,7 +23,7 @@ export class RoomController {
     @Res() res: Response
   ) {
     return res.json({
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       content: await this.roomService.getAllRoom()
     })
   }
@@ -37,7 +35,7 @@ export class RoomController {
     @Res() res: Response
   ) {
     return res.json({
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       content: await this.roomService.getRoomByLocateId(+maViTri)
     })
   }
@@ -54,7 +52,7 @@ export class RoomController {
     @Query('keyWord') keyWord?: string
   ) {
     return res.json({
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       content: await this.roomService.pagingSearchRoom(pageIndex, pageSize, keyWord)
     })
   }
@@ -66,14 +64,15 @@ export class RoomController {
     @Res() res: Response
   ) {
     return res.json({
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       content: await this.roomService.getRoomById(+id)
     })
   }
 
   // Upload Phòng
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     type: UploadImgRoomDto
@@ -89,21 +88,23 @@ export class RoomController {
 
   // Thêm Phòng
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Post()
   async createRoom(
     @Body() roomDto: RoomDto,
     @Res() res: Response
   ) {
     return res.json({
-      statusCode: 201,
-      data: await this.roomService.createRoom(roomDto)
+      statusCode: HttpStatus.CREATED,
+      content: await this.roomService.createRoom(roomDto)
     })
   }
 
   // Cập Nhật Phòng
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Patch(':id')
   async updateRoom(
     @Param('id') id: string,
@@ -111,16 +112,21 @@ export class RoomController {
     @Res() res: Response
   ) {
     return res.json({
-      statusCode: 201,
-      data: await this.roomService.updateRoom(+id, roomDto)
+      statusCode: HttpStatus.OK,
+      content: await this.roomService.updateRoom(+id, roomDto)
     })
   }
 
   // Xoá Phòng
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Delete(':id')
-  removeRoom(@Param('id') id: string) {
-    return this.roomService.removeRoom(+id);
+  async removeRoom(@Param('id') id: string) {
+    await this.roomService.removeRoom(+id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Xoá thành công"
+    }
   }
 }

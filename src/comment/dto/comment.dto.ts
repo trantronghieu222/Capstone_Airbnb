@@ -1,8 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCommentDto } from './create-comment.dto';
 import { ApiProperty } from "@nestjs/swagger";
 
-export class UpdateCommentDto extends PartialType(CreateCommentDto) {
+export class CommentDto {
     @ApiProperty({ example: 0 })
     ma_binh_luan: number;
 

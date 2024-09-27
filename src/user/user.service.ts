@@ -1,9 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-// import * as bcrypt from 'bcrypt';
+import { UserDto } from './dto/user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -25,12 +23,15 @@ export class UserService {
   };
 
   // Thêm Người Dùng
-  async createUser(createUserDto: CreateUserDto) {
-    // const hashedPassword = await bcrypt.hash(createUserDto.mat_khau, 10);
+  async createUser(userDto: UserDto) {
+    // Check ngày sinh
+    
+
+    // Create User
     let data = await this.prisma.nguoiDung.create({
       data: {
-        ...createUserDto,
-        // mat_khau: hashedPassword,
+        ...userDto,
+        mat_khau: await bcrypt.hash(userDto.mat_khau, 10),
         da_xoa: false
       }
     })
@@ -104,7 +105,7 @@ export class UserService {
         currentPage: intPageIndex,
         data
       }
-    }else{
+    } else {
       const data = await this.prisma.nguoiDung.findMany({
         select: this.showUser,
         where: {
@@ -117,6 +118,28 @@ export class UserService {
       return data
     }
   }
+
+  // Thông Tin Tài Khoản
+  // async getUserInformation(id: number) {
+  //   let userInfo = await this.prisma.nguoiDung.findUnique({
+  //     where: {
+  //       ma_nguoi_dung: id
+  //     }
+  //   })
+
+  //   let userInfoDecodePwd = {
+  //     "ma_nguoi_dung": userInfo.ma_nguoi_dung,
+  //     "ten_nguoi_dung": userInfo.ten_nguoi_dung,
+  //     "email": userInfo.email,
+  //     "mat_khau": userInfo.mat_khau,
+  //     "so_dt": userInfo.so_dt,
+  //     "ngay_sinh": userInfo.ngay_sinh,
+  //     "gioi_tinh": userInfo.gioi_tinh,
+  //     "vai_tro": userInfo.vai_tro
+  //   }
+
+  //   return userInfoDecodePwd
+  // }
 
   // Upload Avatar
   async uploadAvatarUser(id: number, file: Express.Multer.File) {
@@ -136,12 +159,15 @@ export class UserService {
   }
 
   // Cập Nhật Người Dùng
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+  async updateUser(id: number, userDto: UserDto) {
     let data = await this.prisma.nguoiDung.update({
       where: {
         ma_nguoi_dung: id
       },
-      data: updateUserDto
+      data: {
+        ...userDto,
+        mat_khau: await bcrypt.hash(userDto.mat_khau, 10)
+      }
     })
     return data;
   }

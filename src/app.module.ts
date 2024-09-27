@@ -10,9 +10,10 @@ import { BookingModule } from './booking/booking.module';
 import { UserModule } from './user/user.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { PrismaService } from 'prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [RoomModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), LocationModule, CommentModule, BookingModule, UserModule],
+  imports: [RoomModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), LocationModule, CommentModule, BookingModule, UserModule, JwtModule.register({global: true})],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
 })

@@ -1,12 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
-export class CreateUserDto {
-    @ApiProperty({ example: 0})
+export class UserDto {
+    @IsNotEmpty({ message: "Không được để trống mã người dùng" })
+    @ApiProperty({ example: 0 })
     ma_nguoi_dung: number;
 
     @ApiProperty({ example: 'string' })
     ten_nguoi_dung: string;
 
+    @IsNotEmpty({ message: "Không được để trống email" })
+    @IsEmail({}, { message: "Email không hợp lệ" })
     @ApiProperty({ example: 'string' })
     email: string;
 

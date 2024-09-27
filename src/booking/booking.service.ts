@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 import { PrismaService } from 'prisma/prisma.service';
+import { BookingDto } from './dto/booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -10,9 +9,9 @@ export class BookingService {
   ){}
 
   // Đặt phòng
-  async create(createBookingDto: CreateBookingDto) {
+  async create(bookingDto: BookingDto) {
     let data = await this.prisma.datPhong.create({
-      data: createBookingDto
+      data: bookingDto
     })
     return data
   }
@@ -44,12 +43,12 @@ export class BookingService {
   }
 
   // Cập nhật
-  async updateBooking(id: number, updateBookingDto: UpdateBookingDto) {
+  async updateBooking(id: number, bookingDto: BookingDto) {
     let data = await this.prisma.datPhong.update({
       where: {
         ma_dat_phong: id
       },
-      data: updateBookingDto
+      data: bookingDto
     })
     return data
   }
