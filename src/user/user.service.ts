@@ -19,13 +19,13 @@ export class UserService {
     ngay_sinh: true,
     gioi_tinh: true,
     vai_tro: true,
+    avatar: true,
     da_xoa: false
   };
 
   // Thêm Người Dùng
   async createUser(userDto: UserDto) {
-    // Check ngày sinh
-    
+    // Check ngày sinh    
 
     // Create User
     let data = await this.prisma.nguoiDung.create({

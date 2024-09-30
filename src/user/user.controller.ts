@@ -6,14 +6,14 @@ import { UploadImgLocationDto } from 'src/location/dto/upload-img-location.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getStorageOption } from 'src/shared/file-upload.service';
 import { UserDto } from './dto/user.dto';
-// import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags("NguoiDung")
 @Controller('users')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    // private jwtService: JwtService
+    private jwtService: JwtService
   ) { }
 
   // Thêm Người Dùng
@@ -75,11 +75,14 @@ export class UserController {
     type: UploadImgLocationDto
   })
   @UseInterceptors(FileInterceptor("hinhAnh", { storage: getStorageOption('avatar') }))
-  @Post('upload-avatar/:id')
+  @Post('upload-avatar')
   async uploadAvatarUser(
-    @Param('id') id: number,
+    @Req() req: Request,
     @UploadedFile() file: Express.Multer.File
   ) {
+    let token = req.headers['authorization'].split(' ')[1]
+    let decodeToken = this.jwtService.decode(token)
+    let id = decodeToken.userId
     return this.userService.uploadAvatarUser(+id, file)
   }
 
