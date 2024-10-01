@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, UploadedFile, UseInterceptors, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, UploadedFile, UseInterceptors, Req, SetMetadata } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { getStorageOption } from 'src/shared/file-upload.service';
 import { UserDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags("NguoiDung")
 @Controller('users')
@@ -18,7 +19,8 @@ export class UserController {
 
   // Thêm Người Dùng
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['admin'])
   @Post()
   createUser(@Body() userDto: UserDto) {
     return this.userService.createUser(userDto);
