@@ -24,7 +24,17 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Welcome to the Airbnb API, a comprehensive solution for managing and operating online room rental services. This API is built using NestJS, a progressive Node.js framework for building efficient and scalable server-side applications, and Prisma, a next-generation ORM for managing database interactions. For secure user authentication, the API utilizes JSON Web Tokens (JWT), ensuring robust protection and streamlined access control.
+
+This API is designed to provide essential functionalities including user authentication, comment management, room booking, user management, rental room management, and location management.
+
+### API specification (Swagger)
+
+Swagger URL: http://localhost:8080/swagger
+
+### Video demo API
+
+https://www.youtube.com/watch?v=LfRrZ9ZAtnQ
 
 ## Installation
 
