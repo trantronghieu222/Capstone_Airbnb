@@ -31,7 +31,7 @@ export class RolesGuard implements CanActivate {
 
       const userRole = decodedToken.role;
       if (!requiredRoles.includes(userRole)) {
-        throw new UnauthorizedException('Vai trò không đủ quyền');
+        throw new UnauthorizedException('Không đủ quyền truy cập');
       }
 
       return true; // Vai trò hợp lệ

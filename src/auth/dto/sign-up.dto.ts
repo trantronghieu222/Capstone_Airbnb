@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class SignUpDto {
-    // @ApiProperty({ example: 0})
-    // ma_nguoi_dung: number;
-
     @ApiProperty({ example: 'string' })
     ten_nguoi_dung: string;
 
+    @IsNotEmpty({message: 'Không được để trống Email'})
+    @IsEmail({}, {message: 'Email không hợp lệ'})
     @ApiProperty({ example: 'string' })
     email: string;
 
@@ -21,7 +21,4 @@ export class SignUpDto {
 
     @ApiProperty({ example: 'true' })
     gioi_tinh: boolean;
-
-    // @ApiProperty({ example: 'string' })
-    // vai_tro: string;
 }

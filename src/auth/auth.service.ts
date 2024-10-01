@@ -19,6 +19,26 @@ export class AuthService {
     return this.jwtService.decode(token);
   }
 
+  // Create token
+  createToken(userId: number, role: string): string {
+    const payload = { userId, role };
+    return this.jwtService.sign(payload, {
+      algorithm: 'HS256',
+      expiresIn: '1h',
+      secret: 'AIRBNB_BACKEND_SECRET_KEY',
+    });
+  }
+
+  // Refesh token
+  createTokenRef(userId: number, role: string): string {
+    const payload = { userId, role };
+    return this.jwtService.sign(payload, {
+      algorithm: 'HS256',
+      expiresIn: '7d',
+      secret: 'AIRBNB_BACKEND_REFRESH',
+    });
+  }
+
   // Đăng nhập
   async signIn(signInDto: SignInDto) {
     let checkedEmail = await this.prisma.nguoiDung.findFirst({
@@ -29,7 +49,7 @@ export class AuthService {
     if (checkedEmail) {
       // Giải mã pwd
       if (bcrypt.compareSync(signInDto.mat_khau, checkedEmail.mat_khau)) {
-        let token = this.jwtService.sign({userId: checkedEmail.ma_nguoi_dung, role: checkedEmail.vai_tro}, {algorithm: 'HS256', expiresIn: '1h', secret:'AIRBNB_BACKEND_SECRET_KEY'})
+        let token = this.createToken(checkedEmail.ma_nguoi_dung, checkedEmail.vai_tro)
 
         return {
           status: HttpStatus.OK,
