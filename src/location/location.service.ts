@@ -78,7 +78,7 @@ export class LocationService {
 
   // Get Vị Trí Theo Id
   async getLocationById(id: number) {
-    let data = await this.prisma.viTri.findMany({
+    let data = await this.prisma.viTri.findUnique({
       where: {
         da_xoa: false,
         ma_vi_tri: id

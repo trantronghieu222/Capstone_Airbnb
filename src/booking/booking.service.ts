@@ -24,7 +24,7 @@ export class BookingService {
 
   // Get Đặt Phòng Theo Id
   async getBookingById(id: number) {
-    let data = await this.prisma.datPhong.findMany({
+    let data = await this.prisma.datPhong.findUnique({
       where: {
         ma_dat_phong: id
       }

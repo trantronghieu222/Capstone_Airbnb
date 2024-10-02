@@ -115,7 +115,7 @@ export class RoomService {
   // Tìm Phòng Theo Id 
   async getRoomById(id: number) {
     try {
-      let data = await this.prisma.phong.findMany({
+      let data = await this.prisma.phong.findUnique({
         select: this.showRoom,
         where: {
           ma_phong: id

@@ -48,7 +48,7 @@ export class UserService {
 
   // Get Người Dùng Theo Id
   async getUserById(id: number) {
-    let data = await this.prisma.nguoiDung.findMany({
+    let data = await this.prisma.nguoiDung.findUnique({
       select: this.showUser,
       where: {
         da_xoa: false,
