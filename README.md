@@ -28,13 +28,31 @@ Welcome to the Airbnb API, a comprehensive solution for managing and operating o
 
 This API is designed to provide essential functionalities including user authentication, comment management, room booking, user management, rental room management, and location management.
 
-### API specification (Swagger)
+## Authorization with JWT
+
+This application uses JWT (JSON Web Token) for authentication and authorization. Upon successful login, a token is issued, which must be included in the headers of all subsequent API requests for secure access.
+
+### The system is divided into two roles: Admin and User
+
+- Admin Role:
+Admin users have full access to all API endpoints.
+
+- User Role:
+Regular users are restricted in their API access. 
+They cannot:
+  * Add, update, or delete (Rooms, Locations, or Users).
+
+### Upload Avatar
+
+Users are allowed to upload avatars to their accounts. Uploading an avatar is tied to an authenticated token, meaning they can only modify their own profile.
+
+## API specification (Swagger)
 
 Swagger URL: http://localhost:8080/swagger
 
-### Video demo API
+## Video demo API
 
-https://www.youtube.com/watch?v=LfRrZ9ZAtnQ
+https://www.youtube.com/watch?v=DDK6x5Mk0iE
 
 ## Installation
 

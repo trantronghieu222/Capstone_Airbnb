@@ -41,7 +41,10 @@ export class UserService {
   // Get Danh Sách Người Dùng
   async getAllUser() {
     let data = await this.prisma.nguoiDung.findMany({
-      select: this.showUser
+      select: this.showUser,
+      where: {
+        da_xoa: false
+      }
     })
     return data
   }
@@ -63,6 +66,7 @@ export class UserService {
     let data = await this.prisma.nguoiDung.findMany({
       select: this.showUser,
       where: {
+        da_xoa: false,
         ten_nguoi_dung: {
           contains: TenNguoiDung,
           // mode: 'insensitive'

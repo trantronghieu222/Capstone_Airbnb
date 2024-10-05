@@ -62,10 +62,10 @@ export class AuthService {
         };
       }
       else {
-        return new HttpException('Mật khẩu không đúng', HttpStatus.UNAUTHORIZED)
+        throw new HttpException('Mật khẩu không đúng', HttpStatus.UNAUTHORIZED)
       }
     }
-    return new HttpException('Email không đúng', HttpStatus.UNAUTHORIZED)
+    throw new HttpException('Email không đúng', HttpStatus.UNAUTHORIZED)
   }
 
   // Đăng ký

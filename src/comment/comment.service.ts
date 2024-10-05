@@ -17,7 +17,13 @@ export class CommentService {
 
   // Get Danh Sách Bình Luận
   async getAllComment() {
-    let data = await this.prisma.binhLuan.findMany()
+    let data = await this.prisma.binhLuan.findMany({
+      where: {
+        Phong: {
+          da_xoa: false,
+        }
+      }
+    })
     return data
   }
 
@@ -25,7 +31,10 @@ export class CommentService {
   async getCommentByRoomId(MaPhong: number) {
     let data = await this.prisma.binhLuan.findMany({
       where: {
-        ma_phong: MaPhong
+        ma_phong: MaPhong,
+        Phong: {
+          da_xoa: false
+        }
       }
     })
     return data

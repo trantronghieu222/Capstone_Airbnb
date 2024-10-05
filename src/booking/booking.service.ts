@@ -18,7 +18,13 @@ export class BookingService {
 
   // Get Danh Sách Đặt Phòng
   async getAllBooking() {
-    let data = await this.prisma.datPhong.findMany();
+    let data = await this.prisma.datPhong.findMany({
+      where: {
+        Phong: {
+          da_xoa: false
+        }
+      }
+    });
     return data
   }
 
@@ -26,7 +32,10 @@ export class BookingService {
   async getBookingById(id: number) {
     let data = await this.prisma.datPhong.findUnique({
       where: {
-        ma_dat_phong: id
+        ma_dat_phong: id,
+        Phong: {
+          da_xoa: false
+        }
       }
     });
     return data
@@ -36,7 +45,10 @@ export class BookingService {
   async getBookingByUserId(MaNguoiDung: number){
     let data = await this.prisma.datPhong.findMany({
       where: {
-        ma_nguoi_dat: MaNguoiDung
+        ma_nguoi_dat: MaNguoiDung,
+        NguoiDung: {
+          da_xoa: false
+        }
       }
     })
     return data

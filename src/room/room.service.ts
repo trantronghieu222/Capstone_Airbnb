@@ -76,6 +76,9 @@ export class RoomService {
       const totalRooms = await this.prisma.phong.count({
         where: {
           da_xoa: false,
+          ViTri: {
+            da_xoa: false
+          },
           ten_phong: {
             contains: keyWord,
           },
@@ -118,7 +121,11 @@ export class RoomService {
       let data = await this.prisma.phong.findUnique({
         select: this.showRoom,
         where: {
-          ma_phong: id
+          ma_phong: id,
+          da_xoa: false,
+          ViTri: {
+            da_xoa: false
+          }
         }
       })
       return data
