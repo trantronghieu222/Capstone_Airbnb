@@ -52,7 +52,7 @@ Swagger URL: http://localhost:8080/swagger
 
 ## Video demo API
 
-[https://www.youtube.com/watch?v=LfRrZ9ZAtnQ](https://www.youtube.com/watch?v=DDK6x5Mk0iE)
+https://www.youtube.com/watch?v=Zy-6x5xC_KA
 
 ## Installation
 
