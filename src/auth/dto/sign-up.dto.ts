@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, Matches } from "class-validator";
 
 export class SignUpDto {
     @ApiProperty({ example: 'string' })
@@ -17,6 +17,7 @@ export class SignUpDto {
     so_dt: string;
 
     @ApiProperty({ example: 'string' })
+    @Matches(/^\d{2}\/\d{2}\/\d{4}$/, { message: 'Ngày sinh phải theo định dạng DD/MM/YYYY.' })
     ngay_sinh: string;
 
     @ApiProperty({ example: 'true' })
