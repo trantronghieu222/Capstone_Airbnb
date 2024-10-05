@@ -55,7 +55,7 @@ export class AuthService {
           status: HttpStatus.OK,
           message: 'Đăng nhập thành công',
           token,
-          data: {
+          content: {
             email: checkedEmail.email,
             hoTen: checkedEmail.ten_nguoi_dung,
           }
@@ -96,7 +96,7 @@ export class AuthService {
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Đăng ký thành công',
-      data: createUser,
+      content: createUser,
     };
   }
 }

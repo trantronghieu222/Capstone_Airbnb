@@ -107,7 +107,7 @@ export class UserService {
         totalUser: totalUser,
         totalPages: Math.ceil(totalUser / intPageSize),
         currentPage: intPageIndex,
-        data
+        content: data
       }
     } else {
       const data = await this.prisma.nguoiDung.findMany({

@@ -100,7 +100,7 @@ export class RoomService {
         totalRooms,
         totalPages: Math.ceil(totalRooms / intPageSize),
         currentPage: intPageIndex,
-        data
+        content: data
       };
     } else {
       const data = await this.prisma.phong.findMany({

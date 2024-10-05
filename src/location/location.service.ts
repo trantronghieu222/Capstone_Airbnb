@@ -60,7 +60,7 @@ export class LocationService {
         totalLocation: totalLocation,
         currentPage: intPageIndex,
         totalPage: Math.ceil(totalLocation / intPageSize),
-        data
+        content: data
       }
     } else {
       const data = await this.prisma.viTri.findMany({
