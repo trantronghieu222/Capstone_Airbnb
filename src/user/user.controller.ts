@@ -8,6 +8,7 @@ import { getStorageOption } from 'src/shared/file-upload.service';
 import { UserDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags("NguoiDung")
 @Controller('users')
@@ -46,16 +47,16 @@ export class UserController {
   }
 
   // Thông tin tài khoản
-  // @ApiBearerAuth()
-  // @UseGuards(AuthGuard('jwt'))
-  // @Get('thong-tin-tai-khoan')
-  // getUserInformation(
-  //   @Req() req: Request
-  // ) {
-  //   let token = req.headers['authorization'].split(' ')[1]
-  //   let decodeToken = this.jwtService.decode(token)
-  //   return this.userService.getUserInformation(+decodeToken.userId)
-  // }
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get('thong-tin-tai-khoan')
+  getUserInformation(
+    @Req() req: Request
+  ) {
+    let token = req.headers['authorization'].split(' ')[1]
+    let decodeToken = this.jwtService.decode(token)
+    return this.userService.getUserInformation(+decodeToken.userId)
+  }
 
   // Get Người Dùng Theo Id
   @Get(':id')
@@ -92,8 +93,8 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() userDto: UserDto) {
-    return this.userService.updateUser(+id, userDto);
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(+id, updateUserDto);
   }
 
   // Xoá Người Dùng

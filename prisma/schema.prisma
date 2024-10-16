@@ -78,11 +78,10 @@ model Phong {
 }
 
 model ViTri {
-  ma_vi_tri  Int      @id @default(autoincrement())
-  ten_vi_tri String?  @db.VarChar(255)
-  tinh_thanh String?  @db.VarChar(255)
-  quoc_gia   String?  @db.VarChar(255)
-  hinh_anh   String?  @db.VarChar(255)
-  da_xoa     Boolean?
+  ma_vi_tri  Int     @id @default(autoincrement())
+  ten_vi_tri String? @db.VarChar(255)
+  tinh_thanh String? @db.VarChar(255)
+  quoc_gia   String? @db.VarChar(255)
+  hinh_anh   String? @db.VarChar(255)
   Phong      Phong[]
 }

@@ -68,8 +68,8 @@ export class LocationController {
   @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin'])
   @Patch(':id')
-  update(@Param('id') id: string, @Body() locationDto: LocationDto) {
-    return this.locationService.update(+id, locationDto);
+  updateLocation(@Param('id') id: string, @Body() locationDto: LocationDto) {
+    return this.locationService.updateLocation(+id, locationDto);
   }
 
   // Xoá Vị Trí
@@ -77,7 +77,7 @@ export class LocationController {
   @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin'])
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.locationService.remove(+id);
+  removeLocaiton(@Param('id') id: string) {
+    return this.locationService.removeLocation(+id);
   }
 }

@@ -39,10 +39,6 @@ export class RoomService {
         select: this.showRoom,
         where: {
           da_xoa: false,
-          // Vị trí chưa bị xoá
-          ViTri: {
-            da_xoa: false
-          }
         }
       })
       return data;
@@ -58,9 +54,6 @@ export class RoomService {
       where: {
         da_xoa: false,
         ma_vi_tri: maViTri,
-        ViTri: {
-          da_xoa: false
-        }
       }
     })
     return data
@@ -76,9 +69,6 @@ export class RoomService {
       const totalRooms = await this.prisma.phong.count({
         where: {
           da_xoa: false,
-          ViTri: {
-            da_xoa: false
-          },
           ten_phong: {
             contains: keyWord,
           },
@@ -123,9 +113,6 @@ export class RoomService {
         where: {
           ma_phong: id,
           da_xoa: false,
-          ViTri: {
-            da_xoa: false
-          }
         }
       })
       return data
@@ -142,7 +129,7 @@ export class RoomService {
           ma_phong: id
         },
         data: {
-          hinh_anh: file.filename
+          hinh_anh: `room/${file.filename}`
         }
       })
       return uploadImgRoom
@@ -169,7 +156,7 @@ export class RoomService {
       where: { ma_vi_tri: roomDto.ma_vi_tri },
     });
 
-    if (!checkLocation || checkLocation?.da_xoa) {
+    if (!checkLocation) {
       throw new HttpException("Không tồn tại vị trí", HttpStatus.BAD_REQUEST)
     }
 
@@ -198,6 +185,16 @@ export class RoomService {
   // Xoá Phòng 
   async removeRoom(id: number) {
     try {
+      let checkBooking = await this.prisma.datPhong.findMany({
+        where: {
+          ma_phong: id
+        }
+      })
+
+      if (checkBooking) {
+        throw new HttpException("Không thể xoá phòng khi vẫn còn đơn đặt phòng", HttpStatus.BAD_REQUEST)
+      }
+
       let data = await this.prisma.phong.update({
         where: {
           ma_phong: id

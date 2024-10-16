@@ -4,6 +4,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
+import { UpdatePasswordDto } from './dto/update-pwd.dto';
 
 
 @Injectable()
@@ -56,8 +57,13 @@ export class AuthService {
           message: 'Đăng nhập thành công',
           token,
           content: {
+            id: checkedEmail.ma_nguoi_dung,
             email: checkedEmail.email,
             hoTen: checkedEmail.ten_nguoi_dung,
+            gioiTinh: checkedEmail.gioi_tinh,
+            ngaySinh: checkedEmail.ngay_sinh,
+            vaiTro: checkedEmail.vai_tro,
+            anhDaiDien: checkedEmail.avatar
           }
         };
       }
@@ -98,5 +104,28 @@ export class AuthService {
       message: 'Đăng ký thành công',
       content: createUser,
     };
+  }
+
+  // Đổi mật khẩu
+  async updatePassword(id: number, updatePassword: UpdatePasswordDto) {
+    let currentPwd = await this.prisma.nguoiDung.findUnique({
+      where: {
+        ma_nguoi_dung: id
+      }
+    })
+
+    if(!bcrypt.compareSync(updatePassword.mat_khau_hien_tai, currentPwd.mat_khau)) {
+      throw new HttpException('Mật khẩu hiện tại không chính xác', HttpStatus.BAD_REQUEST)
+    }
+
+    let data= await this.prisma.nguoiDung.update({
+      where: {
+        ma_nguoi_dung: id
+      },
+      data: {
+        mat_khau: await bcrypt.hash(updatePassword.mat_khau, 10)
+      }
+    })
+    return data
   }
 }

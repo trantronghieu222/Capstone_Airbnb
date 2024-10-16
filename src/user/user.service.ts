@@ -1,7 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -124,26 +125,15 @@ export class UserService {
   }
 
   // Thông Tin Tài Khoản
-  // async getUserInformation(id: number) {
-  //   let userInfo = await this.prisma.nguoiDung.findUnique({
-  //     where: {
-  //       ma_nguoi_dung: id
-  //     }
-  //   })
+  async getUserInformation(id: number) {
+    let userInfo = await this.prisma.nguoiDung.findUnique({
+      where: {
+        ma_nguoi_dung: id
+      }
+    })
 
-  //   let userInfoDecodePwd = {
-  //     "ma_nguoi_dung": userInfo.ma_nguoi_dung,
-  //     "ten_nguoi_dung": userInfo.ten_nguoi_dung,
-  //     "email": userInfo.email,
-  //     "mat_khau": userInfo.mat_khau,
-  //     "so_dt": userInfo.so_dt,
-  //     "ngay_sinh": userInfo.ngay_sinh,
-  //     "gioi_tinh": userInfo.gioi_tinh,
-  //     "vai_tro": userInfo.vai_tro
-  //   }
-
-  //   return userInfoDecodePwd
-  // }
+    return userInfo
+  }
 
   // Upload Avatar
   async uploadAvatarUser(id: number, file: Express.Multer.File) {
@@ -153,7 +143,7 @@ export class UserService {
           ma_nguoi_dung: id
         },
         data: {
-          avatar: file.filename
+          avatar: `avatar/${file.filename}`
         }
       })
       return uploadAvatar
@@ -163,18 +153,28 @@ export class UserService {
   }
 
   // Cập Nhật Người Dùng
-  async updateUser(id: number, userDto: UserDto) {
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
     let data = await this.prisma.nguoiDung.update({
       where: {
         ma_nguoi_dung: id
       },
-      data: {
-        ...userDto,
-        mat_khau: await bcrypt.hash(userDto.mat_khau, 10)
-      }
+      data: updateUserDto
     })
     return data;
   }
+
+  // async updateUser(id: number, userDto: UserDto) {
+  //   let data = await this.prisma.nguoiDung.update({
+  //     where: {
+  //       ma_nguoi_dung: id
+  //     },
+  //     data: {
+  //       ...userDto,
+  //       mat_khau: await bcrypt.hash(userDto.mat_khau, 10)
+  //     }
+  //   })
+  //   return data;
+  // }
 
   // Xoá Người Dùng
   async remove(id: number) {

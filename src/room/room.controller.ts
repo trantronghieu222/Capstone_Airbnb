@@ -8,6 +8,7 @@ import { Response } from 'express';
 import { RoomDto } from './dto/room.dto';
 import { getStorageOption } from 'src/shared/file-upload.service';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags("Phong")
 @Controller('phong-thue')

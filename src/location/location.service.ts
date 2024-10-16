@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { LocationDto } from './dto/location.dto';
 
@@ -10,23 +10,15 @@ export class LocationService {
 
   // Thêm Vị Trí
   async create(locationDto: LocationDto) {
-    let newLocation = {
-      ...locationDto,
-      da_xoa: false
-    }
     let data = await this.prisma.viTri.create({
-      data: newLocation
+      data: locationDto
     })
     return data;
   }
 
   // Get Danh Sách Vị Trí
   async getAllLocation() {
-    let data = await this.prisma.viTri.findMany({
-      where: {
-        da_xoa: false
-      }
-    })
+    let data = await this.prisma.viTri.findMany()
     return data
   }
 
@@ -38,7 +30,6 @@ export class LocationService {
     if (pageIndex && pageSize) {
       const totalLocation = await this.prisma.viTri.count({
         where: {
-          da_xoa: false,
           ten_vi_tri: {
             contains: keyWord
           }
@@ -47,7 +38,6 @@ export class LocationService {
 
       const data = await this.prisma.viTri.findMany({
         where: {
-          da_xoa: false,
           ten_vi_tri: {
             contains: keyWord
           }
@@ -65,7 +55,6 @@ export class LocationService {
     } else {
       const data = await this.prisma.viTri.findMany({
         where: {
-          da_xoa: false,
           ten_vi_tri: {
             contains: keyWord
           }
@@ -73,14 +62,12 @@ export class LocationService {
       })
       return data
     }
-
   }
 
   // Get Vị Trí Theo Id
   async getLocationById(id: number) {
     let data = await this.prisma.viTri.findUnique({
       where: {
-        da_xoa: false,
         ma_vi_tri: id
       }
     })
@@ -95,7 +82,7 @@ export class LocationService {
           ma_vi_tri: id
         },
         data: {
-          hinh_anh: file.filename
+          hinh_anh: `location/${file.filename}`
         }
       })
       return uploadImgLocation
@@ -105,7 +92,7 @@ export class LocationService {
   }
 
   // Cập Nhật Vị Trí
-  async update(id: number, locationDto: LocationDto) {
+  async updateLocation(id: number, locationDto: LocationDto) {
     let data = await this.prisma.viTri.update({
       where: {
         ma_vi_tri: id
@@ -116,14 +103,21 @@ export class LocationService {
   }
 
   // Xoá Vị Trí
-  async remove(id: number) {
-    // return `This action removes a #${id} location`;
-    let data = await this.prisma.viTri.update({
+  async removeLocation(id: number) {
+    let checkRoom = await this.prisma.phong.findMany({
+      where: {
+        ViTri: {
+          ma_vi_tri: id
+        }
+      }
+    })
+    if (checkRoom) {
+      throw new HttpException('Còn phòng trong vị trí không thể xoá', HttpStatus.BAD_REQUEST)
+    }
+
+    let data = await this.prisma.viTri.delete({
       where: {
         ma_vi_tri: id
-      },
-      data: {
-        da_xoa: true
       }
     })
     return data
